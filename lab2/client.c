@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
+#include <netdb.h>
 void main(int argc, char **argv){
 	if(argc != 2){
 	printf("Usage: %s <port>\n", argv[0]);
@@ -14,22 +14,27 @@ void main(int argc, char **argv){
 
 	int port = atoi(argv[1]);
 	int sockfd;
-	struct sockaddr_in serverAddr;
+	struct sockaddr_in serverAddr, clientAddr;
 	char buffer[1024];
 
 	socklen_t addr_size;
 
 	sockfd = socket(PF_INET, SOCK_DGRAM, 0);
 	memset(&serverAddr, '\0', sizeof(serverAddr));
+	memset(&clientAddr, '\0', sizeof(clientAddr));
 
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(port);
 	serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	while(1)
 	{
-		scanf("%s", buffer);
+		bzero(buffer, 1024);
+		fgets(buffer, 1024, stdin);
 		sendto(sockfd, buffer, 1024, 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
 		printf("[+]Data Send: %s\n", buffer);
+		recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*)& serverAddr, &addr_size);
+		printf("[+]Data Resieved: %s\n", buffer);
+		
 	}
 	
 
