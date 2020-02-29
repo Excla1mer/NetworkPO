@@ -32,7 +32,7 @@ void main(int argc, char **argv){
 		fgets(buffer, 1024, stdin);
 		sendto(sockfd, buffer, 1024, 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
 		printf("[+]Data Send: %s\n", buffer);
-		recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*)& serverAddr, &addr_size);
+		recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*)&serverAddr, &addr_size);
 		printf("[+]Data Resieved: %s\n", buffer);
 		
 	}
