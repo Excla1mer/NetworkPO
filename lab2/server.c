@@ -10,8 +10,8 @@ void main(int argc, char **argv){
 	if(argc != 2){
 	printf("Usage: %s <port>\n", argv[0]);
 	exit(0);
-	}
-	int t = 0;
+	}	
+	int t = 0, random;
 	int port = atoi(argv[1]);
 	int sockfd;
 	struct sockaddr_in si_me, si_other;
@@ -30,7 +30,7 @@ void main(int argc, char **argv){
 	{
 		if((bind(sockfd, (struct sockaddr*)&si_me, sizeof(si_me))) < 0 )
 		{
-			printf("Error bind()\n");
+			printf("Port is unavailable\nPlease input new port -> ");
 			scanf("%d",&port);
 			si_me.sin_port = htons(port);
 		}
@@ -41,13 +41,25 @@ void main(int argc, char **argv){
 	}
 	while(1)
 	{
+		printf("-----------------------------------------------------------------\n");
 		addr_size = sizeof(si_other);
 		bzero(buffer, 1024);
 		recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*)& si_other, &addr_size);
 		printf("[+]Data Received: %s\n", buffer);
-		printf("[#]From: %s\n", inet_ntoa(si_me.sin_addr));
-		sendto(sockfd, buffer, 1024, 0, (struct sockaddr*)&si_other, sizeof(si_other));
-		printf("[+]Data Send: %s\n", buffer);
+		//printf("[#]From: %s\n", inet_ntoa(si_me.sin_addr));
+		random = rand() % 10; 
+		if(random >= 7)
+		{
+			*buffer = "Error message";
+			sendto(sockfd, buffer, 1024, 0, (struct sockaddr*)&si_other, sizeof(si_other));
+			printf("[+]Data Send: %s\n", buffer);
+		}
+		else
+		{
+			sendto(sockfd, buffer, 1024, 0, (struct sockaddr*)&si_other, sizeof(si_other));
+			printf("[+]Data Send: %s\n", buffer);
+		}
+		
 	}
 	
 	
